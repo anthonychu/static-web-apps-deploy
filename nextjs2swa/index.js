@@ -96,6 +96,15 @@ async function main() {
 
     console.log(`Creating Azure Functions assets`)
     fs.copySync(path.resolve(__dirname, 'functions_files'), apiDir)
+
+    console.log(`Creating script to update environment`)
+    const commands =
+        `export INPUT_APP_LOCATION=.nextjs2swa/static\n` +
+        `export INPUT_API_LOCATION=.nextjs2swa/api\n` +
+        `export INPUT_OUTPUT_LOCATION=\n` +
+        `export INPUT_SKIP_APP_BUILD=true\n` +
+        `export DISABLE_PHP_BUILD=true\n`
+    fs.writeFileSync('/update_env', commands)
 }
 
 main()
