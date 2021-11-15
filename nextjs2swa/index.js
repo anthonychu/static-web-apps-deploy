@@ -85,14 +85,34 @@ async function main() {
     packageJson.scripts.build = 'echo "skipping build"'
     fs.writeFileSync(path.resolve(apiDir, 'package.json'), JSON.stringify(packageJson, null, 2))
 
+    let generatedIndexHtml = false
+    if (!fs.existsSync(path.resolve(staticDir, 'index.html'))) {
+        console.log(`Generating index.html in ${staticDir}`)
+        // write a dummy index.html file to make the build succeed
+        fs.writeFileSync(path.resolve(staticDir, 'index.html'), '<html><body><h1>Azure Static Web Apps</h1></body></html>')
+        generatedIndexHtml = true
+    }
+
     console.log(`Generating staticwebapp.config.json`)
     const staticwebappConfig = {
         "navigationFallback": {
-            "rewrite": "/api/server_function"
-        }
+            "rewrite": "/api/server_function",
+        },
+    }
+    if (generatedIndexHtml) {
+        staticwebappConfig.routes = [
+            {
+                "route": "/index.html",
+                "rewrite": "/api/server_function",
+            },
+            {
+                "route": "/",
+                "rewrite": "/api/server_function",
+            },
+        ]
     }
     fs.writeFileSync(path.resolve(staticDir, 'staticwebapp.config.json'), JSON.stringify(staticwebappConfig, null, 2))
-    // fs.writeFileSync(path.resolve(staticDir, 'index.html'), '<html><body><h1>Azure Static Web Apps</h1></body></html>')
+
 
     console.log(`Creating Azure Functions assets`)
     fs.copySync(path.resolve(__dirname, 'functions_files'), apiDir)
