@@ -1,6 +1,9 @@
 #!/bin/sh -l
+
+# Build Next.js
+cd /nextjs2swa
+npm install
+node index.js
+
 cd /bin/staticsites/
-
-node --version
-
 ./StaticSitesClient $INPUT_ACTION
