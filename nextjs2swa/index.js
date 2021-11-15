@@ -42,7 +42,7 @@ async function main() {
     fs.mkdirSync(outputDir)
 
     const tempDir = path.resolve(os.tmpdir(), 'nextjs2swa')
-    fs.mkdirSync(tempDir)Co
+    fs.mkdirSync(tempDir)
     console.log(`Copying app into ${tempDir}`)
     fs.copySync(origAppDir, tempDir)
     console.log(`Copying app into ${apiDir}`)
