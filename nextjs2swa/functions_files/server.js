@@ -14,6 +14,7 @@ async function main() {
         let parsedUrl = parse(req.url, true)
         if (parsedUrl.pathname.startsWith('/api/server_function') && req.headers["x-ms-original-url"]) {
             parsedUrl = parse(req.headers["x-ms-original-url"], true)
+            req.url = parsedUrl.pathname + (parsedUrl.search || "")
         }
         res.setHeader('x-ms-nextjs-render', 'server')
         handle(req, res, parsedUrl)
