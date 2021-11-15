@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const util = require('util')
+const os = require('os')
 const exec = util.promisify(require('child_process').exec)
 
 let origAppDir = process.env.INPUT_APP_LOCATION
@@ -40,12 +41,12 @@ async function main() {
     console.log(`Creating output folder ${outputDir}`)
     fs.mkdirSync(outputDir)
 
+    const tempDir = path.resolve(os.tmpdir(), 'nextjs2swa')
+    fs.mkdirSync(tempDir)Co
+    console.log(`Copying app into ${tempDir}`)
+    fs.copySync(origAppDir, tempDir)
     console.log(`Copying app into ${apiDir}`)
-    fs.copySync(origAppDir, apiDir, {
-        filter: (src, _) => {
-            return src !== outputDir && src !== path.resolve(origAppDir, 'node_modules') && src !== path.resolve(origAppDir, '.next')
-        }
-    })
+    fs.copySync(tempDir, apiDir)
 
     console.log(`Building app in ${apiDir}`)
     const { stdout, stderr } = await exec(`npm i && npx next build`, {
