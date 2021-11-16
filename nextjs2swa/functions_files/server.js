@@ -24,6 +24,10 @@ async function main() {
         const origWriteHead = res.writeHead
         res.writeHead = function (statusCode) {
             if ([301, 302, 303, 307].includes(statusCode)) {
+                res.setHeader('Set-Cookie1', [
+                    '__prerender_bypass=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=None',
+                    '__next_preview_data=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=None'
+                ])
                 origWriteHead.apply(res, [200])
                 res.end(`
                     <script>
