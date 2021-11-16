@@ -4,6 +4,7 @@ const util = require('util')
 const os = require('os')
 const exec = util.promisify(require('child_process').exec)
 
+// validate app location
 let origAppDir = process.env.INPUT_APP_LOCATION
 if (!origAppDir) {
     console.log(`App location is empty`)
@@ -41,6 +42,7 @@ async function main() {
     console.log(`Creating output folder ${outputDir}`)
     fs.mkdirSync(outputDir)
 
+    // copy to temp folder first in case apiDir is a child of origAppDir
     const tempDir = path.resolve(os.tmpdir(), 'nextjs2swa')
     fs.mkdirSync(tempDir)
     console.log(`Copying app into ${tempDir}`)
@@ -89,7 +91,7 @@ async function main() {
     let generatedIndexHtml = false
     if (!fs.existsSync(path.resolve(staticDir, 'index.html'))) {
         console.log(`Generating index.html in ${staticDir}`)
-        // write a dummy index.html file to make the build succeed
+        // write a dummy /index.html file because Static Web Apps needs it
         fs.writeFileSync(path.resolve(staticDir, 'index.html'), '<html><body><h1>Azure Static Web Apps</h1></body></html>')
         generatedIndexHtml = true
     }

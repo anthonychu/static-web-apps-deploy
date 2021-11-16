@@ -46,7 +46,7 @@ async function main() {
                 }
             }
             origSetHeader.apply(res, arguments)
-            origSetHeader.apply(res, ['Set-Cookies1', arguments[1]])
+            origSetHeader.apply(res, [arguments[0] + '1', arguments[1]])
         }
 
         handle(req, res, parsedUrl)
