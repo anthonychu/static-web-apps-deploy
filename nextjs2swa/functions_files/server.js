@@ -24,10 +24,6 @@ async function main() {
         const origWriteHead = res.writeHead
         res.writeHead = function (statusCode) {
             if ([301, 302, 303, 307].includes(statusCode)) {
-                res.setHeader('Set-Cookie1', [
-                    '__prerender_bypass=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=None',
-                    '__next_preview_data=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=None'
-                ])
                 origWriteHead.apply(res, [200])
                 res.end(`
                     <script>
@@ -38,6 +34,18 @@ async function main() {
             } else {
                 origWriteHead.apply(res, arguments)
             }
+        }
+
+        const origSetHeader = res.setHeader
+        res.setHeader = function () {
+            if (arguments[0].toLowerCase() === 'set-cookies') {
+                if (Array.isArray(arguments[1])) {
+                    arguments[1] = arguments[1].map(v => v.replace("Expires=Thu, 01 Jan 1970 00:00:00 GMT", "Expires=Thu, 01 Jan 1970 00:00:01 GMT"))
+                } else if (typeof value === 'string') {
+                    arguments[1] = arguments[1].replace("Expires=Thu, 01 Jan 1970 00:00:00 GMT", "Expires=Thu, 01 Jan 1970 00:00:01 GMT")
+                }
+            }
+            origSetHeader.apply(res, arguments)
         }
 
         handle(req, res, parsedUrl)
