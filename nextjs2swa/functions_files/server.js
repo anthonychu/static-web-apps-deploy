@@ -36,19 +36,6 @@ async function main() {
             }
         }
 
-        const origSetHeader = res.setHeader
-        res.setHeader = function () {
-            if (arguments[0].toLowerCase() === 'set-cookie') {
-                if (Array.isArray(arguments[1])) {
-                    arguments[1] = arguments[1].map(v => v.replace("Expires=Thu, 01 Jan 1970 00:00:00 GMT", "Expires=Thu, 01 Jan 1970 00:00:01 GMT"))
-                } else if (typeof value === 'string') {
-                    arguments[1] = arguments[1].replace("Expires=Thu, 01 Jan 1970 00:00:00 GMT", "Expires=Thu, 01 Jan 1970 00:00:01 GMT")
-                }
-            }
-            origSetHeader.apply(res, arguments)
-            origSetHeader.apply(res, [arguments[0] + '1', arguments[1]])
-        }
-
         handle(req, res, parsedUrl)
     }).listen(port, (err) => {
         if (err) throw err
