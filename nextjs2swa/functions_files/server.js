@@ -38,7 +38,7 @@ async function main() {
 
         const origSetHeader = res.setHeader
         res.setHeader = function () {
-            if (arguments[0].toLowerCase() === 'set-cookies') {
+            if (arguments[0].toLowerCase() === 'set-cookie') {
                 if (Array.isArray(arguments[1])) {
                     arguments[1] = arguments[1].map(v => v.replace("Expires=Thu, 01 Jan 1970 00:00:00 GMT", "Expires=Thu, 01 Jan 1970 00:00:01 GMT"))
                 } else if (typeof value === 'string') {
@@ -46,6 +46,7 @@ async function main() {
                 }
             }
             origSetHeader.apply(res, arguments)
+            origSetHeader.apply(res, ['Set-Cookies1', arguments[1]])
         }
 
         handle(req, res, parsedUrl)
