@@ -51,7 +51,7 @@ async function main() {
     fs.copySync(tempDir, apiDir)
 
     console.log(`Building app in ${apiDir}`)
-    const { stdout, stderr } = await exec(`npm i && npx next build`, {
+    const { stdout, stderr } = await exec(`npm i --legacy-peer-deps && npx next build`, {
         cwd: apiDir
     })
 
