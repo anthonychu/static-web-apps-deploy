@@ -21,7 +21,7 @@ runs:
       shell: bash
     - name: Build And Deploy
       id: builddeploy
-      uses: Azure/static-web-apps-deploy@v1
+      uses: Azure/static-web-apps-deploy@v1-self-hosted
       if: ${{ false }}
       with:
         azure_static_web_apps_api_token: test
